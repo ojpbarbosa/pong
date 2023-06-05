@@ -15,7 +15,7 @@
       velocidade_bola_x dw 03h       ; velocidade da bola no eixo x (coluna) (3 pixels por frame)
       velocidade_bola_y dw 02h       ; velocidade da bola no eixo y (linha) (2 pixels por frame)
 
-      ultimo_timestamp  db 00h       ; último timestamp registrado (usado para calcular o delta time
+      ultimo_timestamp  db 00h       ; último timestamp registrado (usado para calcular o delta time)
 
       jogador_um_x      dw 04h       ; coordenada x (coluna) do jogador um
       jogador_um_y      dw 04h       ; coordenada y (linha) do jogador um
