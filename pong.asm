@@ -76,50 +76,89 @@ mover_bola proc
                                      mov  ax, velocidade_bola_x               ; move a velocidade da bola no eixo x para ax
                                      add  bola_x, ax                          ; adiciona a velocidade da bola no eixo x à coordenada x da bola
 
+      ; verifica colisões horizontais
                                      mov  ax, borda_tela                      ; move a borda da tela para ax
                                      cmp  bola_x, ax                          ; se a bola atingir a borda esquerda da tela contando a borda da tela
-      ; jl   inverter_velocidade_bola_x             ; inverte a velocidade da bola no eixo x
-                                     jl   reiniciar_bola
+                                     jl   inverter_velocidade_bola_x          ; inverte a velocidade da bola no eixo x
 
-      ; senão
                                      mov  ax, largura_tela                    ; move a largura da tela para ax
                                      sub  ax, tamanho_bola                    ; subtrai o tamanho da bola
                                      sub  ax, borda_tela                      ; subtrai a borda da tela para considerar a borda direita da tela
                                      cmp  bola_x, ax                          ; compara com a coordenada x da bola
-      ;    jg   inverter_velocidade_bola_x             ; se a bola atingir a borda direita da tela, inverte a velocidade da bola no eixo x
-                                     jg   reiniciar_bola
-
+                                     jg   inverter_velocidade_bola_x          ; se a bola atingir a borda direita da tela, inverte a velocidade da bola no eixo x
 
       ; movimenta a bola verticalmente
                                      mov  ax, velocidade_bola_y               ; move a velocidade da bola no eixo y para ax
                                      add  bola_y, ax                          ; adiciona a velocidade da bola no eixo y à coordenada y da bola
 
+      ; verifica colisões verticais
                                      mov  ax, borda_tela                      ; move a borda da tela para ax
                                      cmp  bola_y, ax                          ; se a bola atingir a borda superior da tela contando a borda da tela
-      ;      jl   inverter_velocidade_bola_y             ; inverte a velocidade da bola no eixo y
-                                     jl   reiniciar_bola
+                                     jl   inverter_velocidade_bola_y          ; inverte a velocidade da bola no eixo y
 
-      ; senão
                                      mov  ax, altura_tela                     ; move a altura da tela para ax
                                      sub  ax, tamanho_bola                    ; subtrai o tamanho da bola
                                      sub  ax, borda_tela                      ; subtrai a borda da tela para considerar a borda inferior da tela
                                      cmp  bola_y, ax                          ; compara com a coordenada y da bola
-      ;     jg   inverter_velocidade_bola_y             ; se a bola atingir a borda inferior da tela, inverte a velocidade da bola no eixo y
-                                     jg   reiniciar_bola
+                                     jg   inverter_velocidade_bola_y          ; se a bola atingir a borda inferior da tela, inverte a velocidade da bola no eixo y
 
-                                     ret
+      ; verifica colisão com jogadores
+                                     mov  ax, bola_x                          ; move a coordenada x da bola para ax
+                                     add  ax, tamanho_bola                    ; adiciona o tamanho da bola
+                                     cmp  ax, jogador_dois_x                  ; compara com a coordenada x do jogador dois
+                                     jng  verificar_colisao_jogador_um        ; se a bola estiver à esquerda do jogador dois, verifica a colisão com o jogador dois
+
+                                     mov  ax, jogador_dois_x                  ; move a coordenada x do jogador dois para ax
+                                     add  ax, largura_jogador                 ; adiciona a largura do jogador
+                                     cmp  bola_x, ax                          ; compara com a coordenada x da bola
+                                     jnl  verificar_colisao_jogador_um        ; se a bola estiver à direita do jogador dois, verifica a colisão com o jogador um
+
+                                     mov  ax, bola_y                          ; move a coordenada y da bola para ax
+                                     add  ax, tamanho_bola                    ; adiciona o tamanho da bola
+                                     cmp  ax, jogador_dois_y                  ; compara com a coordenada y do jogador dois
+                                     jng  verificar_colisao_jogador_um        ; se a bola estiver abaixo do jogador dois, verifica a colisão com o jogador dois
+
+                                     mov  ax, jogador_dois_y                  ; move a coordenada y do jogador dois para ax
+                                     add  ax, altura_jogador                  ; adiciona a altura do jogador
+                                     cmp  bola_y, ax                          ; compara com a coordenada y da bola
+                                     jnl  verificar_colisao_jogador_um        ; se a bola estiver acima do jogador dois, verifica a colisão com o jogador dois
+
+                                     jmp  inverter_velocidade_bola_x          ; se a bola atingir o jogador dois, inverte a velocidade da bola no eixo x
 
       ; inverte a velocidade da bola no eixo x
       inverter_velocidade_bola_x:    
                                      neg  velocidade_bola_x
-
-                                     ret
-
+                                     jmp  mover_bola_fim
 
       ; inverte a velocidade da bola no eixo y
       inverter_velocidade_bola_y:    
                                      neg  velocidade_bola_y
 
+      ; verifica colisão com o jogador um
+      verificar_colisao_jogador_um:  
+                                     mov  ax, bola_x                          ; move a coordenada x da bola para ax
+                                     add  ax, tamanho_bola                    ; adiciona o tamanho da bola
+                                     cmp  ax, jogador_um_x                    ; compara com a coordenada x do jogador um
+                                     jng  mover_bola_fim                      ; se a bola estiver à direita do jogador um, não verifica a colisão com o jogador um
+
+                                     mov  ax, jogador_um_x                    ; move a coordenada x do jogador um para ax
+                                     add  ax, largura_jogador                 ; adiciona a largura do jogador
+                                     cmp  bola_x, ax                          ; compara com a coordenada x da bola
+                                     jnl  mover_bola_fim                      ; se a bola estiver à direita do jogador um, não verifica a colisão com o jogador um
+
+                                     mov  ax, bola_y                          ; move a coordenada y da bola para ax
+                                     add  ax, tamanho_bola                    ; adiciona o tamanho da bola
+                                     cmp  ax, jogador_um_y                    ; compara com a coordenada y do jogador um
+                                     jng  mover_bola_fim                      ; se a bola estiver abaixo do jogador um, não verifica a colisão com o jogador um
+
+                                     mov  ax, jogador_um_y                    ; move a coordenada y do jogador um para ax
+                                     add  ax, altura_jogador                  ; adiciona a altura do jogador
+                                     cmp  bola_y, ax                          ; compara com a coordenada y da bola
+                                     jnl  mover_bola_fim                      ; se a bola estiver acima do jogador um, não verifica a colisão com o jogador um
+
+                                     jmp  inverter_velocidade_bola_x          ; se a bola atingir o jogador um, inverte a velocidade da bola no eixo x
+
+      mover_bola_fim:                
                                      ret
 
 mover_bola endp
@@ -129,6 +168,7 @@ reiniciar_bola proc
       ; reinicia a coordenada x e y da bola para o centro da tela
                                      mov  ax, bola_x_inicial                  ; move a coordenada x inicial da bola para ax
                                      mov  bola_x, ax                          ; move a coordenada x inicial da bola para a coordenada x da bola
+
                                      mov  ax, bola_y_inicial                  ; move a coordenada y inicial da bola para ax
                                      mov  bola_y, ax                          ; move a coordenada y inicial da bola para a coordenada y da bola
 
