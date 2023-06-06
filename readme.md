@@ -11,10 +11,11 @@
   <img alt="GitHub" src="https://img.shields.io/github/license/ojpbarbosa/pong.svg">
 </p>
 <h3>Description</h3>
-
+16-bit MASM/TASM Pong Game written and commented in Portuguese.
 <br>
 <h3>Stack</h3>
 
 - [MASM](https://wikipedia.org/wiki/Microsoft_Macro_Assembler)
+- [TASM](https://en.wikipedia.org/wiki/Turbo_Assembler)
 <br>
 </samp>
