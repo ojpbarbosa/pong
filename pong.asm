@@ -241,11 +241,10 @@ desenhar_jogadores proc
 
 desenhar_jogadores endp
 
-      ; TODO: fix mover_jogador_dois label in order to properly move
-      ; procedimento para mover os jogadores
 mover_jogadores proc
                                      mov  ah, 01h                             ; função para verificar se uma tecla foi pressionada
                                      int  16h                                 ; executa a função
+
                                      jz   mover_jogador_dois                  ; se nenhuma tecla foi pressionada, pula para mover o jogador dois
 
                                      mov  ah, 00h                             ; função para obter o código da tecla pressionada
@@ -262,6 +261,7 @@ mover_jogadores proc
 
                                      cmp  al, 'S'                             ; compara o código da tecla pressionada com a tecla 'S'
                                      je   mover_jogador_um_baixo              ; se for igual, pula para mover o jogador um para baixo
+
                                      jmp  mover_jogador_dois                  ; se não, pula para mover o jogador dois
 
       mover_jogador_um_cima:         
@@ -295,6 +295,13 @@ mover_jogadores proc
                                      jmp  mover_jogador_dois                  ; pula para mover o jogador dois
 
       mover_jogador_dois:            
+                                     mov  ah, 01h                             ; função para verificar se uma tecla foi pressionada
+                                     int  16h                                 ; executa a função
+                                     jz   mover_jogadores_fim                 ; se nenhuma tecla foi pressionada, pula para mover_jogadores_fim
+
+                                     mov  ah, 00h                             ; função para obter o código da tecla pressionada
+                                     int  16h                                 ; executa a função
+
                                      cmp  al, 'i'                             ; compara o código da tecla pressionada com a tecla 'i'
                                      je   mover_jogador_dois_cima             ; se for igual, pula para mover o jogador dois para cima
 
@@ -306,6 +313,7 @@ mover_jogadores proc
 
                                      cmp  al, 'K'                             ; compara o código da tecla pressionada com a tecla 'K'
                                      je   mover_jogador_dois_baixo            ; se for igual, pula para mover o jogador dois para baixo
+
                                      jmp  mover_jogadores_fim                 ; se não, pula para mover_jogadores_fim
 
       mover_jogador_dois_cima:       
@@ -337,13 +345,12 @@ mover_jogadores proc
 
       redefinir_jogador_dois_y_baixo:
                                      mov  jogador_dois_y, ax                  ; redefine a coordenada y do jogador dois
-                                     jmp  mover_jogadores_fim                 ; pula para mover_jogadores_fim
 
       mover_jogadores_fim:           
                                      ret
 
-
 mover_jogadores endp
+
 
       pong:                          
                                      mov  ax, @data                           ; inicializa e define o segmento de dados
