@@ -47,7 +47,7 @@ desenhar_bola proc
       ; desenhando outro pixel até o tamanho da bola ser atingido
       ; depois, reinicia a coordenada x e incrementa a coordenada y
       ; e repete o processo até o tamanho da bola ser atingido
-      desenhar_bola_loop:            
+      desenhar_bola_loop:
                                      mov  ah, 0ch                               ; função para desenhar um pixel
                                      mov  al, 0fh                               ; define a cor do pixel como branca (0fh)
                                      int  10h                                   ; executa a função
@@ -98,7 +98,8 @@ mover_bola proc
                                      jg   pontuar_jogador_um                    ; se a bola atingir a borda direita da tela contando a borda da tela, pontua para o jogador um
                                      jmp  mover_bola_verticalmente              ; se não, movimenta a bola verticalmente
 
-      pontuar_jogador_um:            
+      ; label para computar um ponto para o jogador um
+      pontuar_jogador_um:
                                      neg  velocidade_bola_x                     ; inverte a velocidade da bola no eixo x
 
                                      inc  pontos_jogador_um                     ; incrementa os pontos do jogador um
@@ -111,7 +112,8 @@ mover_bola proc
 
                                      ret
 
-      pontuar_jogador_dois:          
+      ; label para computar um ponto para o jogador dois
+      pontuar_jogador_dois:
                                      neg  velocidade_bola_x                     ; inverte a velocidade da bola no eixo x
 
                                      inc  pontos_jogador_dois                   ; incrementa os pontos do jogador dois
@@ -124,12 +126,13 @@ mover_bola proc
 
                                      ret
 
-      fim_jogo:                      
+      ; game over
+      fim_jogo:
                                      mov  ax, 4c00h                             ; finaliza o programa com o código de erro 0
                                      int  21h                                   ; executa a função
 
       ; movimenta a bola verticalmente
-      mover_bola_verticalmente:      
+      mover_bola_verticalmente:
                                      mov  ax, velocidade_bola_y                 ; move a velocidade da bola no eixo y para ax
                                      add  bola_y, ax                            ; adiciona a velocidade da bola no eixo y à coordenada y da bola
 
@@ -145,6 +148,8 @@ mover_bola proc
                                      jg   inverter_velocidade_bola_y            ; se a bola atingir a borda inferior da tela, inverte a velocidade da bola no eixo y
 
       ; verifica colisão com jogadores
+      ; há colisão se com o jogador dois se:
+      ; (bola_x + tamanho_bola < jogador_dois_x && jogador_dois_x + largura_jogador < bola_x && bola_y + tamanho_bola > jogador_dois_y && bola_y < jogador_dois_y + altura_jogador)
                                      mov  ax, bola_x                            ; move a coordenada x da bola para ax
                                      add  ax, tamanho_bola                      ; adiciona o tamanho da bola
                                      cmp  ax, jogador_dois_x                    ; compara com a coordenada x do jogador dois
@@ -168,16 +173,21 @@ mover_bola proc
                                      jmp  inverter_velocidade_bola_x            ; se a bola atingir o jogador dois, inverte a velocidade da bola no eixo x
 
       ; inverte a velocidade da bola no eixo x
-      inverter_velocidade_bola_x:    
-                                     neg  velocidade_bola_x
-                                     jmp  mover_bola_fim
+      inverter_velocidade_bola_x:
+                                     neg  velocidade_bola_x                     ; inverte a velocidade da bola no eixo x ao negativar a velocidade da bola no eixo x
+                                     jmp  mover_bola_fim                        ; vai para o fim do procedimento
 
       ; inverte a velocidade da bola no eixo y
-      inverter_velocidade_bola_y:    
-                                     neg  velocidade_bola_y
+      inverter_velocidade_bola_y:
+                                     mov  ax, velocidade_bola_x                 ; move a velocidade da bola no eixo x para ax
+                                     neg  ax                                    ; negativa a velocidade da bola no eixo x
+                                     add  bola_x, ax                            ; adiciona a velocidade da bola no eixo x à coordenada x da bola
+                                     neg  velocidade_bola_y                     ; inverte a velocidade da bola no eixo y ao negativar a velocidade da bola no eixo y
 
       ; verifica colisão com o jogador um
-      verificar_colisao_jogador_um:  
+      verificar_colisao_jogador_um:
+      ; há colisão se com o jogador um se:
+      ; (bola_x + tamanho_bola > jogador_um_x && bola_x < jogador_um_x + largura_jogador && bola_y + tamanho_bola > jogador_um_y && bola_y < jogador_um_y + altura_jogador)
                                      mov  ax, bola_x                            ; move a coordenada x da bola para ax
                                      add  ax, tamanho_bola                      ; adiciona o tamanho da bola
                                      cmp  ax, jogador_um_x                      ; compara com a coordenada x do jogador um
@@ -200,7 +210,8 @@ mover_bola proc
 
                                      jmp  inverter_velocidade_bola_x            ; se a bola atingir o jogador um, inverte a velocidade da bola no eixo x
 
-      mover_bola_fim:                
+      ; fim do procedimento
+      mover_bola_fim:
                                      ret
 
 mover_bola endp
@@ -219,7 +230,6 @@ reiniciar_bola endp
 
       ; procedimento para desenhar os jogadores
 desenhar_jogadores proc
-
                                      mov  cx, jogador_um_x                      ; define a coordenada x inicial do jogador um
                                      mov  dx, jogador_um_y                      ; define a coordenada y inicial do jogador um
 
@@ -229,7 +239,7 @@ desenhar_jogadores proc
       ; desenhando outro pixel até a largura do jogador um ser atingido
       ; depois, reinicia a coordenada x e incrementa a coordenada y
       ; e repete o processo até a altura do jogador um ser atingido
-      desenhar_jogador_um_loop:      
+      desenhar_jogador_um_loop:
                                      mov  ah, 0ch                               ; função para desenhar um pixel
                                      mov  al, 0fh                               ; define a cor do pixel como branca (0fh)
                                      int  10h                                   ; executa a função
@@ -258,7 +268,7 @@ desenhar_jogadores proc
       ; desenhando outro pixel até a largura do jogador dois ser atingido
       ; depois, reinicia a coordenada x e incrementa a coordenada y
       ; e repete o processo até a altura do jogador dois ser atingido
-      desenhar_jogador_dois_loop:    
+      desenhar_jogador_dois_loop:
                                      mov  ah, 0ch                               ; função para desenhar um pixel
                                      mov  al, 0fh                               ; define a cor do pixel como branca (0fh)
                                      int  10h                                   ; executa a função
@@ -307,7 +317,8 @@ mover_jogadores proc
 
                                      jmp  mover_jogador_dois                    ; se não, pula para mover o jogador dois
 
-      mover_jogador_um_cima:         
+      ; label para mover o jogador um para cima
+      mover_jogador_um_cima:
                                      mov  ax, velocidade_jogador                ; move a velocidade do jogador para ax
                                      sub  jogador_um_y, ax                      ; subtrai a velocidade do jogador à coordenada y do jogador um
 
@@ -317,11 +328,13 @@ mover_jogadores proc
 
                                      jmp  mover_jogador_dois                    ; pula para mover o jogador dois
 
-      redefinir_jogador_um_y_cima:   
+      ; label para redefinir a coordenada y do jogador um para cima
+      redefinir_jogador_um_y_cima:
                                      mov  jogador_um_y, ax                      ; redefine a coordenada y do jogador um
                                      jmp  mover_jogador_dois                    ; pula para mover o jogador dois
 
-      mover_jogador_um_baixo:        
+      ; label para mover o jogador um para baixo
+      mover_jogador_um_baixo:
                                      mov  ax, velocidade_jogador                ; move a velocidade do jogador para ax
                                      add  jogador_um_y, ax                      ; adiciona a velocidade do jogador à coordenada y do jogador um
 
@@ -333,11 +346,13 @@ mover_jogadores proc
 
                                      jmp  mover_jogador_dois                    ; pula para mover o jogador dois
 
-      redefinir_jogador_um_y_baixo:  
+      ; label para redefinir a coordenada y do jogador um para baixo
+      redefinir_jogador_um_y_baixo:
                                      mov  jogador_um_y, ax                      ; redefine a coordenada y do jogador um
                                      jmp  mover_jogador_dois                    ; pula para mover o jogador dois
 
-      mover_jogador_dois:            
+      ; label para mover o jogador dois
+      mover_jogador_dois:
                                      mov  ah, 01h                               ; função para verificar se uma tecla foi pressionada
                                      int  16h                                   ; executa a função
                                      jz   mover_jogadores_fim                   ; se nenhuma tecla foi pressionada, pula para mover_jogadores_fim
@@ -359,7 +374,8 @@ mover_jogadores proc
 
                                      jmp  mover_jogadores_fim                   ; se não, pula para mover_jogadores_fim
 
-      mover_jogador_dois_cima:       
+      ; label para mover o jogador dois para cima
+      mover_jogador_dois_cima:
                                      mov  ax, velocidade_jogador                ; move a velocidade do jogador para ax
                                      sub  jogador_dois_y, ax                    ; subtrai a velocidade do jogador à coordenada y do jogador dois
 
@@ -369,12 +385,14 @@ mover_jogadores proc
 
                                      jmp  mover_jogadores_fim                   ; pula para mover_jogadores_fim
 
-      redefinir_jogador_dois_y_cima: 
+      ; label para redefinir a coordenada y do jogador dois para cima
+      redefinir_jogador_dois_y_cima:
                                      mov  jogador_dois_y, ax                    ; redefine a coordenada y do jogador dois
 
                                      jmp  mover_jogadores_fim                   ; pula para mover_jogadores_fim
 
-      mover_jogador_dois_baixo:      
+      ; label para mover o jogador dois para baixo
+      mover_jogador_dois_baixo:
                                      mov  ax, velocidade_jogador                ; move a velocidade do jogador para ax
                                      add  jogador_dois_y, ax                    ; adiciona a velocidade do jogador à coordenada y do jogador dois
 
@@ -386,10 +404,12 @@ mover_jogadores proc
 
                                      jmp  mover_jogadores_fim                   ; pula para mover_jogadores_fim
 
+      ; label para redefinir a coordenada y do jogador dois para baixo
       redefinir_jogador_dois_y_baixo:
                                      mov  jogador_dois_y, ax                    ; redefine a coordenada y do jogador dois
 
-      mover_jogadores_fim:           
+      ; fim do procedimento para mover os jogadores
+      mover_jogadores_fim:
                                      ret
 
 mover_jogadores endp
@@ -400,7 +420,7 @@ desenhar_rede proc
                                      mov  dx, di                                ; move di para dx (coordenada y inicial da rede)
 
       ; loop para desenhar a rede na tela, percorrendo a largura e a altura da rede
-      desenhar_rede_loop:            
+      desenhar_rede_loop:
                                      mov  ah, 0ch                               ; função para desenhar um pixel
                                      mov  al, 0fh                               ; define a cor do pixel como branca (0fh)
                                      int  10h                                   ; executa a função
@@ -497,15 +517,14 @@ atualizar_pontos_jogador_dois proc
                                      ret
 atualizar_pontos_jogador_dois endp
 
-
-      pong:                          
+      pong:
                                      mov  ax, @data                             ; inicializa e define o segmento de dados
                                      mov  ds, ax
 
                                      call limpar_tela                           ; limpa a tela
 
       ; loop para atualizar o frame a cada time delta
-      atualizar_frame:               
+      atualizar_frame:
                                      mov  ah, 2ch                               ; função para obter o timestamp
                                      int  21h                                   ; executa a função
 
