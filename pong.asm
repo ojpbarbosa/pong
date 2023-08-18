@@ -1,5 +1,3 @@
-; masm/tasm 16-bit assembly pong
-
 .model small
 .stack 100h
 .data                                             ; segmento de dados
