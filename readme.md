@@ -8,7 +8,7 @@
 </div>
 
 ## Description
-This project is a 8086 16-bit MASM-TASM assembly pong game designed to be played on a x86 MS-DOS emulator, like DOSBox. It was developed by myself and [Gabriel Willian Bartmanovicz](https://github.com/obielwb) for our Assembler Language class in the fifth semester at the [Technical High School of Campinas](https://wikipedia.org/wiki/Technical_High_School_of_Campinas). The code is written and commented in Brazilian Portuguese.
+This project is a 8086 16-bit MASM-TASM assembly pong game designed to be played on a x86 MS-DOS emulator, like DOSBox. It was developed by myself and [Gabriel Willian Bartmanovicz](https://github.com/obielwb) for our Assembler Language class in the fifth semester at the [Technical High School of Campinas - Unicamp](https://wikipedia.org/wiki/Technical_High_School_of_Campinas). The code is written and commented in Brazilian Portuguese.
 
 ## Stack
 - [Intel 8086](https://wikipedia.org/wiki/Intel_8086)
